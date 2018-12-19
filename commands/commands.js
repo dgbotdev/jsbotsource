@@ -3,7 +3,7 @@ const fs = require('fs')
 
 module.exports.run = async(bot, message, args, color, prefixn) => {
 
-  let cmd = args[0]
+  let cmd = args[0].toLowerCase();
 
   if (!cmd) {
     let apiping = `${Math.floor(bot.ping)}ms`

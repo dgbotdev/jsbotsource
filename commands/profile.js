@@ -11,7 +11,7 @@ module.exports.run = async(bot, message, args, color) => {
         message.channel.send('You need an account to use this command. \'register to create one.')
     }
     else {
-        let cmd = args[0]
+        let cmd = args[0].toLowerCase();
         if (!cmd) {
             let profilebed = new Discord.RichEmbed()
                 .setTitle('JSBOT : Profiles : ' + es)

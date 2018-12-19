@@ -11,4 +11,10 @@ module.exports = (bot) => {
         fetchAll: false
     })
     bot.apple_sauce = { Apple_Sauce: 'It tastes good.' }
+    const hastebin = require('hastebin-gen-2')
+    bot.hastebin = (code, ext, message) => {
+        hastebin(code, ext).then(r => {
+            message.channel.send(r)
+        })
+    }
 };

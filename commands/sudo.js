@@ -7,7 +7,7 @@ module.exports.run = async(bot, message, args, color) => {
     const ec = bot.emojis.find(emoji => emoji.name === "jsbotright");
 
 
-    let cmd = args[0]
+    let cmd = args[0].toLowerCase();
 
     if (message.author.id == '246867546924384266') {
         if (cmd == 'db.clear') {
@@ -37,31 +37,13 @@ module.exports.run = async(bot, message, args, color) => {
             bot.db.remove(`${message.guild.id}gs`)
         }
         if (cmd == 'db.set') {
-            let pargs = args[1] // id
-            let hargs = args[2] // key
-            let nargs = args.slice(1).join(" ") // value
-            if (!bot.db.has(pargs)) {
-
-                message.channel.send('User not on database try different id.')
-
-            }
-            else {
-                if (!pargs) {
-                    message.channel.send(`${ex} | Usage: \'sudo db.set id key value\nKeys: \`bio,nick,favcolor,hobbies,username,id\``)
-                }
-                else if (!hargs) {
-                    message.channel.send(`${ex} | Usage: \'sudo db.set id key value\nKeys: \`bio,nick,favcolor,hobbies,username,id\``)
-                }
-                else if (!nargs) {
-                    message.channel.send(`${ex} | Usage: \'sudo db.set id key value\nKeys: \`bio,nick,favcolor,hobbies,username,id\``)
-                }
-                else {
-
-                    message.channel.send(`${ec} | Set user: ${pargs} in ${hargs} to ${nargs}`)
-                    bot.db.set(pargs, nargs, hargs)
-                }
-            }
+            let id = args[1]
+            let value = args.slice(3).join(" ")
+            let key = args[2]
+            bot.db.set(id, value, key)
+            message.channel.send(`${id}: In ${key} to \`${value}\``)
         }
+
         if (cmd == 'db.del') {
             bot.db.delete(message.author.id)
             message.channel.send(`${ec} | Removed owner db account.`)
@@ -71,7 +53,7 @@ module.exports.run = async(bot, message, args, color) => {
             message.channel.send('Restarting bot...')
             const botconfig = require('.../diced/botconfig.json')
             bot.destroy(0)
-            bot.login(botconfig.token)d
+            bot.login(botconfig.token)
         }
         if (cmd == 'db.check.user') {
             let argi = args.slice(1).join(" ")
@@ -100,6 +82,11 @@ module.exports.run = async(bot, message, args, color) => {
 
                 if (typeof evaled !== "string")
                     evaled = require("util").inspect(evaled);
+                if (evaled.length < 1024) {
+                    bot.hastebin(evaled, 'xl', message)
+                    return;
+                }
+
 
                 let codeembed = new Discord.RichEmbed()
                     .setColor(color.red)
@@ -141,12 +128,13 @@ module.exports.run = async(bot, message, args, color) => {
             }
 
         }
+        else {
+
+            message.channel.send({ embed: { description: `${ex} | ${message.author.username}#${message.author.discriminator}, You are not on the list to use sudo permissions.` } })
+        }
 
     }
-    else {
 
-        message.channel.send({ embed: { description: `${ex} | ${message.author.username}#${message.author.discriminator}, You are not on the list to use sudo permissions.` } })
-    }
 
 
 

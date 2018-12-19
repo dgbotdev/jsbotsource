@@ -1,5 +1,5 @@
 const Discord = require("discord.js");
-const botconfig = require('../diced/botconfig.json')
+const botconfig = require('../botconfig.json')
 const fs = require("fs")
 const token = botconfig.token;
 const Enmap = require('enmap')
@@ -75,7 +75,7 @@ bot.on("message", async(message, err) => {
     bot.db.inc(`${message.author.id}p`, 'mesg');
   }
 
-  let prefixn = bot.db.get(`${message.guild.id}gs`, 'prefix')
+  let prefixn = '\''
 
   if (!bot.db.has(`${message.guild.id}gs`)) {
     bot.db.set(`${message.guild.id}gs`, {
@@ -90,7 +90,7 @@ bot.on("message", async(message, err) => {
     })
   }
 
-  if (!prefixn) bot.db.set(`${message.guild.id}gs`, '\'', 'prefix');
+  if (!prefixn) return;
   const args = message.content.slice(prefixn.length).trim().split(/ +/g)
   const command = args.shift().toLowerCase()
 
@@ -100,6 +100,8 @@ bot.on("message", async(message, err) => {
   if (message.content.startsWith('<@!515315613481304065>')) {
     message.channel.send('You can do \'help for all the commands, and info about you and the guild and the bot.')
   }
+
+
 
 
 
@@ -166,22 +168,5 @@ bot.on('guildMemberRemove', async(member, err) => {
   bot.channels.get(bot.db.get(`${member.guild.id}gs`, 'logsch')).send(embed)
 })
 
-bot.on('messageUpdate', async(oldMessage, newMessage, message) => {
-  let embed = new Discord.RichEmbed()
-    .setTitle('Message Edited')
-    .setDescription(`${oldMessage.author.username} edited a message in <#${oldMessage.channel.id}>`)
-    .addField('Old content:', oldMessage)
-    .addField('New content:', newMessage)
-
-  bot.channels.get(bot.db.get(`${oldMessage.guild.id}gs`, 'logsch')).send(embed)
-
-});
-bot.on('messageDelete', async(message) => {
-  let embed = new Discord.RichEmbed()
-    .setTitle('Message Deleted')
-    .setDescription(`${message.user.username} deleted \`${message}\``)
-
-  bot.channels.get(bot.db.get(`${message.guild.id}gs`, 'logsch')).send(embed)
-});
 
 bot.login(token);
